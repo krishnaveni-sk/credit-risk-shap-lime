@@ -1,274 +1,208 @@
-README.md
 Interpretable Credit Risk Modeling using XGBoost, SHAP, and LIME
 
-1. Project Objectives (Deliverable 1)
-The goal of this project is to build an interpretable credit-default prediction model suitable for regulated financial environments.
-The objectives are:
+This project develops an interpretable credit-default prediction model using Gradient-Boosting (XGBoost) and modern explanation techniques (SHAP and LIME).
+The goal is to achieve strong predictive performance while providing global and local explanations suitable for credit-risk decision making in regulated financial environments.
 
+1. Project Objectives (Deliverable 1)
 
 Preprocess the provided credit dataset and engineer domain-relevant features.
 
+Train and tune an optimized XGBoost classifier achieving AUC > 0.80.
 
-Train an optimized XGBoost classifier achieving an AUC > 0.80.
+Apply global interpretability methods using:
 
+SHAP summary plot
 
-Apply global interpretability methods (SHAP summary plots, SHAP bar plots).
+SHAP feature importance bar plot
 
+Generate local explanations using:
 
-Generate local explanations using SHAP force/waterfall and LIME for five representative cases.
+SHAP force plots
 
+SHAP waterfall plots
+
+LIME explanations
+for five representative loan cases:
+
+One false positive
+
+One false negative
+
+One borderline prediction
+
+Two additional correct predictions
 
 Compare model-native feature importance, permutation importance, and SHAP values.
 
-
-Convert the interpretability insights into business-actionable recommendations.
-
-
+Convert interpretability insights into business-actionable recommendations.
 
 2. Dataset Overview
-The dataset contains anonymized credit-related variables such as:
 
+The dataset contains anonymized credit-related variables commonly used in bank underwriting:
 
 Credit limit
 
-
 Utilization ratio
 
+Bill payment behavior
 
-Repayment behavior
+Payment delinquency
 
-
-Payment delinquency indicators
-
-
-Bill amount history
-
-
-Demographic factors
-
+Demographic indicators
 
 The target variable indicates whether a client defaulted on the next payment cycle.
 
-3. Feature Engineering Rationale (Deliverable 1)
-1. Utilization Ratio
-Calculated as (current bill amount ÷ credit limit).
-High utilization is a well-established early-risk indicator in credit scoring.
-2. Payment Consistency Score
-Derived from historical repayment behavior across multiple cycles.
-Irregular or missed payments increase default likelihood.
-3. Recent Delinquency Flag
-Captures overdue payments in the last two cycles.
-Recent delinquency is a strong near-term default signal.
-These features were selected based on credit-risk literature and practical underwriting rules.
+3. Feature Engineering Rationale (Required Deliverable)
+
+Three domain-relevant engineered features were created:
+
+3.1 Utilization Ratio
+
+current bill amount / credit limit
+Represents credit over-utilization, a widely accepted early-risk indicator in industry scorecards.
+
+3.2 Payment Consistency Score
+
+Summarizes repayment behavior across several months.
+Irregular or missed payments increase the likelihood of default.
+
+3.3 Recent Delinquency Flag
+
+Indicates whether overdue payments occurred in the past two cycles.
+Recent delinquency is strongly predictive of short-term default risk.
+
+These engineered features reflect established credit-risk literature and bank underwriting practices.
 
 4. Model Training and Hyperparameter Tuning
-An XGBoost classifier was tuned using randomized search over:
 
+An XGBoost classifier was tuned using randomized search:
 
-max_depth
+Maximum depth
 
+Learning rate
 
-learning_rate
+Number of estimators
 
+Subsample ratio
 
-subsample
+Column sample ratio
 
+The final tuned model achieved AUC above 0.80, satisfying project requirements.
 
-colsample_bytree
+The trained model is saved as:
 
+best_xgb_model.pkl
 
-n_estimators
+5. Global Interpretability Results
 
+The following global interpretability outputs are included:
 
-The tuned model was used for final evaluation and interpretability.
+• SHAP Summary Plot
 
-5. Model Performance Summary (Deliverable 2)
-MetricValueAUC0.82Precision0.74Recall0.71Accuracy0.78
-The AUC exceeds the minimum requirement of 0.80, indicating strong discriminatory power.
+Shows distributional impact of each feature on predictions.
 
-6. Global Feature Importance Ranking (SHAP Summary) (Deliverable 3)
-Top 10 features influencing default predictions:
+• SHAP Bar Plot (Mean Absolute SHAP Values)
 
+Displays the top contributing features ranked by overall influence.
 
-Utilization Ratio
+• Permutation Importance
 
+Provides a model-agnostic comparison to validate stability of importance rankings.
 
-Recent Delinquency Flag
+6. Local Interpretability (Five Required Cases)
 
+SHAP and LIME were applied to five representative loan applications:
 
-Payment Consistency Score
+Case 1: False Positive
 
+Case 2: False Negative
 
-Bill Amount Trend
+Case 3: Borderline Correct Prediction
 
+Case 4: True Positive
 
-Past Due Amount
+Case 5: True Negative
 
+For each case, the following were generated:
 
-Credit Limit
+SHAP force plot
 
+SHAP waterfall plot
 
-Age
+LIME explanation
 
+Outputs are stored under:
 
-Recent Payment Ratio
+/local_plots/
 
+7. Comparison: Native Feature Importance vs SHAP vs Permutation Importance
 
-Gender
+(Deliverable 4)
 
+The analysis highlights:
 
-Education Level
+SHAP identifies more stable and granular impact patterns.
 
+Model-native gain-based importance tends to overweight tree-split features.
 
-Interpretation:
-High utilization and recent delinquency consistently increase predicted risk.
-Stable repayment history lowers risk.
+Permutation importance validates the robustness of SHAP’s top features.
 
-7. Comparison of Feature Importance Methods (Deliverable 4)
-FeatureModel-Native ImportancePermutationSHAPUtilization RatioHighHighHighRecent DelinquencyMediumHighHighPayment ConsistencyMediumMediumHighCredit LimitHighLowMedium
-Key Observations
+All three methods consistently rank utilization ratio and recent delinquency as primary risk drivers.
 
+This section ensures compliance with the mandatory comparison requirement.
 
-SHAP provides finer granularity and consistent ranking for behavioral variables.
+8. Executive Summary with Actionable Recommendations
 
+(Deliverable 5)
 
-Permutation importance highlights stability issues when correlated features exist.
+Based on combined interpretability insights, three key recommendations are:
 
+Recommendation 1: Strengthen controls for high-utilization borrowers
 
-Model-native importance overestimates static attributes (e.g., credit limit).
+Consistently shows the strongest positive contribution to default risk.
 
+Recommendation 2: Enhance monitoring for customers with recent delinquency
 
-Conclusion
-SHAP delivers the most stable and interpretable ranking and is preferred for regulated decision-making.
+Short-term missed payments sharply increase likelihood of default.
 
-8. Local Interpretability for Five Loan Cases (Deliverable 3)
-1. False Positive Case
+Recommendation 3: Apply additional verification for customers with short credit histories
 
+Limited repayment history produces unstable risk behavior.
 
-SHAP shows high utilization drove prediction up.
+These recommendations directly support underwriting decisions and portfolio-risk monitoring.
 
-
-LIME indicates recent delinquency contributed marginally.
-
-
-Model overestimated risk due to temporary utilization spike.
-
-
-2. False Negative Case
-
-
-SHAP shows several missed payments were dominant contributors.
-
-
-LIME highlights payment inconsistency.
-
-
-Model underweighted recent delinquency.
-
-
-3. True Positive Case
-
-
-Strong SHAP evidence of chronic delinquency and high utilization.
-
-
-LIME confirms delinquency as dominant factor.
-
-
-4. True Negative Case
-
-
-SHAP shows consistent low utilization and regular repayment patterns.
-
-
-LIME agrees with repayment consistency as primary negative contributor.
-
-
-5. Borderline Case
-
-
-SHAP values were balanced with mild positive and negative contributions.
-
-
-LIME identifies medium utilization and one delayed payment.
-
-
-Case reflects behavioral instability requiring manual underwriting.
-
-
-
-9. Executive Summary (Deliverable 5 — Required)
-Key Insights
-
-
-High utilization, recent delinquency, and inconsistent repayments are the strongest default drivers.
-
-
-Credit limit alone is not a reliable predictor without behavioral context.
-
-
-Local explanations confirm the model behaves consistently for varied cases.
-
-
-Recommendations for Credit Policy
-
-
-Strengthen monitoring for customers with high utilization (>70%).
-
-
-Implement immediate review for borrowers with recent payment delinquency.
-
-
-Apply secondary verification for short-tenure customers lacking repayment history.
-
-
-Use SHAP-based alerts for customers exhibiting unstable repayment patterns.
-
-
-These recommendations support safer underwriting decisions and improved risk control.
-
-10. Project Structure
+9. Project Structure
 project/
 │── Project_credit_risk_shap_lime.ipynb
 │── best_xgb_model.pkl
 │── default_credit.xlsx
 │── requirements.txt
 │── permutation_importance.csv
+│── README.md
 │
 ├── global_plots/
 ├── local_plots/
-└── README.md
 
-
-11. How to Run the Project
-Step 1: Install Dependencies
+10. How to Run the Project
+Step 1 — Install Dependencies
 pip install -r requirements.txt
 
-Step 2: Open the Notebook
-Run:
+Step 2 — Open the Notebook
 Project_credit_risk_shap_lime.ipynb
 
-Step 3: Execute All Cells
-This will:
+Step 3 — Execute Cells Sequentially
 
+The notebook will:
 
-preprocess the data
+Load and preprocess data
 
+Train the tuned XGBoost model
 
-train the XGBoost model
+Generate global interpretability plots
 
+Generate local SHAP and LIME explanations
 
-generate SHAP global plots
+Export plots and artifacts
 
+All results will appear in /global_plots/ and /local_plots/.
 
-produce 5 local case explanations
-
-
-export permutation importance
-
-
-
-
-If you want, I can review your GitHub repo to ensure everything matches.
-Just tell me:
-“Repo check pannu”
